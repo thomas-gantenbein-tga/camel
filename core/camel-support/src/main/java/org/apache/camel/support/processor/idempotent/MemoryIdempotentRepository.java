@@ -16,7 +16,9 @@
  */
 package org.apache.camel.support.processor.idempotent;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -75,6 +77,21 @@ public class MemoryIdempotentRepository extends ServiceSupport implements Idempo
         answer.setCacheSize(cacheSize);
         ServiceHelper.startService(answer);
         return answer;
+    }
+
+    /**
+     * Creates a new memory based repository using a {@link java.util.LinkedHashMap} as its store, with the given
+     * maximum capacity. When a new entry is added and the store has reached its maximum capacity, the oldest entry is
+     * removed.
+     */
+    public static IdempotentRepository memoryIdempotentRepositoryInsertionOrder(int cacheSize) {
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>() {
+            @Override
+            protected boolean removeEldestEntry(Entry<String, Object> eldest) {
+                return size() > cacheSize;
+            }
+        };
+        return memoryIdempotentRepository(map);
     }
 
     /**
