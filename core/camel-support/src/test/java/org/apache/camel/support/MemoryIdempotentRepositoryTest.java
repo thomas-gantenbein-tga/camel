@@ -41,7 +41,7 @@ class MemoryIdempotentRepositoryTest {
             for (int i = entriesNotFittingInRepository; i < cacheSize + entriesNotFittingInRepository; i++) {
                 assertTrue(repository.contains(String.valueOf(i)), "Repository should contain entry " + i);
             }
-            for (int i = 0; i < cacheSize - entriesNotFittingInRepository; i++) {
+            for (int i = 0; i < entriesNotFittingInRepository; i++) {
                 assertFalse(repository.contains(String.valueOf(i)), "Repository should not contain entry " + i);
             }
         }

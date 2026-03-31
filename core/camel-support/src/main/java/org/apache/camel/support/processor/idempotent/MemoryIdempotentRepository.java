@@ -91,7 +91,11 @@ public class MemoryIdempotentRepository extends ServiceSupport implements Idempo
                 return size() > cacheSize;
             }
         };
-        return memoryIdempotentRepository(map);
+        MemoryIdempotentRepository answer = new MemoryIdempotentRepository(map);
+        answer.setCacheSize(cacheSize);
+        ServiceHelper.startService(answer);
+
+        return answer;
     }
 
     /**
