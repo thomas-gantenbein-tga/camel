@@ -164,7 +164,9 @@ public abstract class ExportBaseCommand extends CamelCommand {
                         defaultValue = "CamelApplication")
     protected String mainClassname = "CamelApplication";
 
-    @CommandLine.Option(names = { "--java-version" }, completionCandidates = JavaVersionCompletionCandidates.class,
+    @CommandLine.Option(names = {
+            "--java-version",
+            "--java" }, completionCandidates = JavaVersionCompletionCandidates.class,
                         description = "Java version (${COMPLETION-CANDIDATES})", defaultValue = "21")
     protected String javaVersion = "21";
 
@@ -308,7 +310,7 @@ public abstract class ExportBaseCommand extends CamelCommand {
     protected boolean javaLiveReload; // reload java codes in dev
     public String pomTemplateName;   // support for specialised pom templates
 
-    public ExportBaseCommand(CamelJBangMain main) {
+    protected ExportBaseCommand(CamelJBangMain main) {
         super(main);
     }
 

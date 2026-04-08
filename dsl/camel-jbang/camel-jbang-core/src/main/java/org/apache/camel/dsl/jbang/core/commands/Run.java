@@ -178,7 +178,9 @@ public class Run extends CamelCommand {
     @Option(names = { "--empty" }, defaultValue = "false", description = "Run an empty Camel without loading source files")
     public boolean empty;
 
-    @CommandLine.Option(names = { "--java-version" }, completionCandidates = JavaVersionCompletionCandidates.class,
+    @CommandLine.Option(names = {
+            "--java-version",
+            "--java" }, completionCandidates = JavaVersionCompletionCandidates.class,
                         description = "Java version (${COMPLETION-CANDIDATES})", defaultValue = "21")
     protected String javaVersion = "21";
 
@@ -697,8 +699,12 @@ public class Run extends CamelCommand {
         writeSetting(main, profileProperties, "camel.main.durationMaxIdleSeconds",
                 () -> executionLimitOptions.maxIdleSeconds > 0
                         ? String.valueOf(executionLimitOptions.maxIdleSeconds) : null);
-        if (serverOptions.port != -1 && serverOptions.port != 8080) {
-            writeSetting(main, profileProperties, "camel.server.port", () -> String.valueOf(serverOptions.port));
+        if (serverOptions.port != -1) {
+            // enable the main HTTP server when --port is explicitly specified
+            writeSetting(main, profileProperties, "camel.server.enabled", "true");
+            if (serverOptions.port != 8080) {
+                writeSetting(main, profileProperties, "camel.server.port", () -> String.valueOf(serverOptions.port));
+            }
         }
         if (serverOptions.port == 0 && serverOptions.managementPort == -1) {
             // use same port for management
@@ -961,8 +967,18 @@ public class Run extends CamelCommand {
         addRuntimeSpecificDependenciesFromProperties(profileProperties);
 
         // Add plugin dependencies
+        Map<String, Plugin> activePlugins = Collections.emptyMap();
         if (!skipPlugins) {
-            Set<PluginExporter> exporters = PluginHelper.getActivePlugins(getMain(), repositories).values()
+            activePlugins = PluginHelper.getActivePlugins(getMain(), repositories);
+
+            // Let plugins customize the run environment (e.g., set config directories)
+            // before plugin exporter dependencies are added, so exporters can scan the right locations
+            for (Plugin plugin : activePlugins.values()) {
+                plugin.getRunCustomizer()
+                        .ifPresent(customizer -> customizer.beforeRun(main, Collections.unmodifiableList(files)));
+            }
+
+            Set<PluginExporter> exporters = activePlugins.values()
                     .stream()
                     .map(Plugin::getExporter)
                     .filter(Optional::isPresent)
@@ -1490,7 +1506,10 @@ public class Run extends CamelCommand {
         }
 
         if (javaVersion != null) {
-            jbangArgs.add("--java-version=" + javaVersion);
+            jbangArgs.add("--java=" + javaVersion);
+            // remove from cmds so it is not passed to the older Camel version
+            // which may not recognize the --java alias
+            cmds.removeIf(arg -> arg.startsWith("--java-version") || arg.startsWith("--java="));
         }
         if (repositories != null) {
             jbangArgs.add("--repos=" + repositories);
