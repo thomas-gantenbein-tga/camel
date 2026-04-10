@@ -12557,6 +12557,8 @@ public class StaticEndpointBuilders {
      * Path parameter: operation (required)
      * The operation to perform: 'chat-completion', 'embeddings', or
      * 'tool-execution'
+     * There are 3 enums and the value can be one of: chat-completion,
+     * embeddings, tool-execution
      * 
      * @param path operation
      * @return the dsl builder
@@ -12577,6 +12579,8 @@ public class StaticEndpointBuilders {
      * Path parameter: operation (required)
      * The operation to perform: 'chat-completion', 'embeddings', or
      * 'tool-execution'
+     * There are 3 enums and the value can be one of: chat-completion,
+     * embeddings, tool-execution
      * 
      * @param componentName to use a custom component name for the endpoint
      * instead of the default name
@@ -13369,6 +13373,46 @@ public class StaticEndpointBuilders {
      */
     public static PgEventEndpointBuilderFactory.PgEventEndpointBuilder pgevent(String componentName, String path) {
         return PgEventEndpointBuilderFactory.endpointBuilder(componentName, path);
+    }
+    /**
+     * PGVector (camel-pgvector)
+     * Perform operations on the PostgreSQL pgvector Vector Database.
+     * 
+     * Category: database,ai
+     * Since: 4.19
+     * Maven coordinates: org.apache.camel:camel-pgvector
+     * 
+     * Syntax: <code>pgvector:collection</code>
+     * 
+     * Path parameter: collection (required)
+     * The collection (table) name
+     * 
+     * @param path collection
+     * @return the dsl builder
+     */
+    public static PgVectorEndpointBuilderFactory.PgVectorEndpointBuilder pgvector(String path) {
+        return pgvector("pgvector", path);
+    }
+    /**
+     * PGVector (camel-pgvector)
+     * Perform operations on the PostgreSQL pgvector Vector Database.
+     * 
+     * Category: database,ai
+     * Since: 4.19
+     * Maven coordinates: org.apache.camel:camel-pgvector
+     * 
+     * Syntax: <code>pgvector:collection</code>
+     * 
+     * Path parameter: collection (required)
+     * The collection (table) name
+     * 
+     * @param componentName to use a custom component name for the endpoint
+     * instead of the default name
+     * @param path collection
+     * @return the dsl builder
+     */
+    public static PgVectorEndpointBuilderFactory.PgVectorEndpointBuilder pgvector(String componentName, String path) {
+        return PgVectorEndpointBuilderFactory.endpointBuilder(componentName, path);
     }
     /**
      * Pinecone (camel-pinecone)

@@ -126,6 +126,9 @@
         <sonar.coverage.jacoco.xmlReportPaths>
             ${maven.multiModuleProjectDirectory}/coverage/target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.cpd.exclusions>
+            components/camel-jackson3/**,components/camel-jackson3xml/**,components/camel-test/camel-test-junit6/**
+        </sonar.cpd.exclusions>
 
         <cyclonedx-maven-plugin-version>2.9.1</cyclonedx-maven-plugin-version>
         <flatten-maven-plugin-version>1.7.3</flatten-maven-plugin-version>
@@ -367,6 +370,8 @@
                                     <exclude>**/zkserver*.conf</exclude>
                                     <exclude>**/*.wasm</exclude>
                                     <exclude>**/*.lock</exclude>
+                                    <exclude>.claude/**</exclude>
+                                    <exclude>.omc/**</exclude>
                                     <exclude>.mvn/**</exclude>
                                     <exclude>.sdkmanrc</exclude>
                                     <exclude>KEYS</exclude>
@@ -578,6 +583,10 @@
                             <exclude>**/.camel-jbang/**/*</exclude>
                             <exclude>**/commands/edit/edit-help.txt</exclude>
                             <exclude>**/examples/*</exclude>
+                            <exclude>**/src/main/resources/testdata/**/*</exclude>
+                            <!-- Claude Code / OMC worktrees -->
+                            <exclude>.claude/**/*</exclude>
+                            <exclude>.omc/**/*</exclude>
                             <!-- Maven Wrapper -->
                             <exclude>.mvn/**/*</exclude>
                             <exclude>**/maven-wrapper/*</exclude>
